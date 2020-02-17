@@ -58,7 +58,7 @@ class BodyTodos extends Component {
 			    <section className="main">
 				    <input id="toggle-all" className="toggle-all" type="checkbox" onChange = {this.toggleAll}/>
 				    <label htmlFor="toggle-all">Mark all as complete</label>
-                    <Todos todos={this.props.todos} filter={this.props.filter} onDelete={this.props.onDelete} onCompleted = {this.props.onCompleted}/>
+                    <Todos todos={this.props.todos} filter={this.props.filter} onDelete={this.props.onDelete} onCompleted = {this.props.onCompleted} onEdit={this.props.onEdit}/>
                 </section>
         )
     }
@@ -71,7 +71,8 @@ class Todos extends Component {
             todo,
             key: todo.id,
             onDelete: this.props.onDelete,
-            onCompleted: this.props.onCompleted
+            onCompleted: this.props.onCompleted,
+            onEdit: this.props.onEdit,
         };
         const component = React.createElement(Todo, props);
         
@@ -102,16 +103,65 @@ class Todos extends Component {
     }
 }
 class Todo extends Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            textInput: this.props.todo.description,
+            isEditing: false
+        };
+        this.textInput = React.createRef();
+    }
+    
+    onChange = (e) => {
+        this.setState({
+            textInput: e.target.value
+        });
+    }
+
+    edit = () => {
+        this.setState({
+            isEditing: true
+        });
+        setTimeout(()=>{
+            this.textInput.current.focus();
+        }, 100);
+        
+    }
+    save = () => {
+        this.setState( {
+            isEditing: false
+        });
+        this.props.onEdit(this.props.todo.id, this.state.textInput);
+        
+    }
+    classNames(classes) {
+        return Object.entries(classes)
+          .filter(([key, value]) => value)
+          .map(([key, value]) => key)
+          .join(' ');
+    }
+     
+    onKeyPress = (e) => {
+        if(e.key === 'Enter'){
+            this.save();
+        }
+        
+    }
     render() {
         const todo = this.props.todo;
+        const liClass = this.classNames({
+            'completed' : todo.completed,
+            'editing': this.state.isEditing
+        });
         return (
-            <li className={todo.completed ? 'completed' : ''}>
+            <li className={liClass} >
                 <div className="view">
                     <input className="toggle" type="checkbox" checked={todo.completed} onChange={(id) => this.props.onCompleted(todo.id)}/>
-                    <label>{todo.description}</label>
+                    <label onDoubleClick={this.edit}>{todo.description}</label>
                     <button className="destroy" onClick = {(id) => this.props.onDelete(todo.id)}></button>
                 </div>
-                <input className="edit" type="text" value={todo.description} />
+                <input ref={this.textInput} className="edit" type="text" value={this.state.textInput}  onChange={this.onChange} onBlur={this.save} onKeyPress={this.onKeyPress}/>
              </li>
         )
     }
@@ -199,6 +249,19 @@ class TodosTableFilter extends Component {
             todos: newTodos
         });
     }
+    editTodo = (id, description) => {
+        const todos = this.state.todos;
+        const newTodos = todos.map((todo)=>{
+            if(todo.id === id){
+                todo.description = description;
+            }
+            return todo;
+        });
+        this.setState({
+            todos: newTodos
+        });
+    }
+    
     onChangeCompleted = (id) => {
         const todos = this.state.todos;
         const newTodos = todos.map((todo)=>{
@@ -233,7 +296,7 @@ class TodosTableFilter extends Component {
         return (
             <section className="todoapp">
                 <HeaderTodos onCreate={this.createTodo}/>
-                <BodyTodos todos={this.state.todos} filter={this.state.filter} onDelete = {this.deleteTodo} onCompleted = {this.onChangeCompleted} onCompletedAll={this.onChangeCompletedAll}/>
+                <BodyTodos todos={this.state.todos} filter={this.state.filter} onDelete = {this.deleteTodo} onCompleted = {this.onChangeCompleted} onCompletedAll={this.onChangeCompletedAll} onEdit={this.editTodo}/>
                 <FooterTodos size = {size} filter={this.state.filter} onChangeFilter={this.changeFilter} clearCompleted = {this.clearCompleted}/>
             </section>
         );
