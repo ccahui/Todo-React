@@ -15,23 +15,50 @@ class App extends Component {
 }
 
 class HeaderTodos extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            textInput : ''
+        };
+    }
+
+    onChange = (e) => {
+        this.setState({
+            textInput: e.target.value
+        });
+    }
+    onKeyPress = (e) => {
+        if(e.key === 'Enter'){
+            this.props.onCreate(this.state.textInput);
+            this.setState({
+                textInput: ''
+            });
+        }
+        
+    }
     render() {
         return (
 			    <header className="header">
 				    <h1>todos</h1>
-				    <input className="new-todo" placeholder="What needs to be done?" />
+				    <input className="new-todo" placeholder="What needs to be done?" value={this.state.textInput} onChange={this.onChange} onKeyDown={this.onKeyPress} />
 			    </header>
         )
     }
 }
 
 class BodyTodos extends Component {
+
+    toggleAll = (e) => {
+       const completed =  e.target.checked;
+       this.props.onCompletedAll(completed);
+    }
+
     render() {
         return (
 			    <section className="main">
-				    <input id="toggle-all" className="toggle-all" type="checkbox"/>
+				    <input id="toggle-all" className="toggle-all" type="checkbox" onChange = {this.toggleAll}/>
 				    <label htmlFor="toggle-all">Mark all as complete</label>
-                    <Todos todos={this.props.todos} filter={this.props.filter}/>
+                    <Todos todos={this.props.todos} filter={this.props.filter} onDelete={this.props.onDelete} onCompleted = {this.props.onCompleted}/>
                 </section>
         )
     }
@@ -42,7 +69,9 @@ class Todos extends Component {
     createTodoRow(todo){
         const props = {
             todo,
-            key: todo.id
+            key: todo.id,
+            onDelete: this.props.onDelete,
+            onCompleted: this.props.onCompleted
         };
         const component = React.createElement(Todo, props);
         
@@ -78,9 +107,9 @@ class Todo extends Component {
         return (
             <li className={todo.completed ? 'completed' : ''}>
                 <div className="view">
-                    <input className="toggle" type="checkbox" defaultChecked={todo.completed} />
+                    <input className="toggle" type="checkbox" checked={todo.completed} onChange={(id) => this.props.onCompleted(todo.id)}/>
                     <label>{todo.description}</label>
-                    <button className="destroy"></button>
+                    <button className="destroy" onClick = {(id) => this.props.onDelete(todo.id)}></button>
                 </div>
                 <input className="edit" type="text" value={todo.description} />
              </li>
@@ -141,7 +170,57 @@ class TodosTableFilter extends Component {
         const newTodos = todos.filter((todo) => !todo.completed);
         this.setState({
             todos: newTodos
-        })
+        });
+    }
+
+    generateIdUnique(){
+        return '_' + Math.random().toString(36).substr(2, 9);
+    }
+
+    createTodo = (description) =>{
+        const todos = this.state.todos;
+        const newTodos = todos.slice();
+        
+        const todo = {
+          id: this.generateIdUnique(),
+          description,
+          completed: false,  
+        };
+        newTodos.push(todo);
+        this.setState({
+            todos: newTodos
+        });
+    }
+
+    deleteTodo = (id) => {
+        const todos = this.state.todos;
+        const newTodos = todos.filter((todo) => todo.id !== id);
+        this.setState({
+            todos: newTodos
+        });
+    }
+    onChangeCompleted = (id) => {
+        const todos = this.state.todos;
+        const newTodos = todos.map((todo)=>{
+            if(todo.id === id){
+                todo.completed = !todo.completed;
+            }
+            return todo;
+        });
+        this.setState({
+            todos: newTodos
+        });
+    }
+
+    onChangeCompletedAll = (completed) => {
+        const todos = this.state.todos;
+        const newTodos = todos.map((todo) => {
+                todo.completed = completed
+                return todo;
+        });
+        this.setState({
+            todos: newTodos
+        });
     }
 
     render() {
@@ -153,8 +232,8 @@ class TodosTableFilter extends Component {
         });
         return (
             <section className="todoapp">
-                <HeaderTodos />
-                <BodyTodos todos={this.state.todos} filter={this.state.filter} />
+                <HeaderTodos onCreate={this.createTodo}/>
+                <BodyTodos todos={this.state.todos} filter={this.state.filter} onDelete = {this.deleteTodo} onCompleted = {this.onChangeCompleted} onCompletedAll={this.onChangeCompletedAll}/>
                 <FooterTodos size = {size} filter={this.state.filter} onChangeFilter={this.changeFilter} clearCompleted = {this.clearCompleted}/>
             </section>
         );
