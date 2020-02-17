@@ -31,25 +31,64 @@ class BodyTodos extends Component {
 			    <section className="main">
 				    <input id="toggle-all" className="toggle-all" type="checkbox"/>
 				    <label htmlFor="toggle-all">Mark all as complete</label>
-				    <ul className="todo-list">
-						<li className="completed">
-						    <div className="view">
-							    <input className="toggle" type="checkbox" defaultChecked="true" />
-							    <label>Taste JavaScript</label>
-							    <button className="destroy"></button>
-						    </div>
-						    <input className="edit" type="text" value="Create a TodoMVC template" />
-					    </li>
-                        <li>
-                            <div className="view">
-                                <input className="toggle" type="checkbox" />
-                                <label>Buy a unicorn</label>
-                                <button className="destroy"></button>
-                            </div>
-                            <input className="edit" value="Rule the web" />
-                        </li>
-                    </ul>
+                    <Todos />
                 </section>
+        )
+    }
+}
+
+class Todos extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            todos: TODOS
+        };
+    }
+
+    createTodoRow(todo){
+        const props = {
+            todo,
+            key: todo.id
+        };
+        const component = React.createElement(Todo, props);
+        
+        return component;
+    }
+    render() {
+        const todos = this.state.todos;
+
+        const rowsTodos = [];
+        todos.forEach((todo)=>{
+            rowsTodos.push(this.createTodoRow(todo));
+        });
+
+        return (
+            <ul className="todo-list">
+              { rowsTodos }
+                <li>
+                    <div className="view">
+                        <input className="toggle" type="checkbox" />
+                        <label>Buy a unicorn</label>
+                        <button className="destroy"></button>
+                    </div>
+                    <input className="edit" value="Rule the web" />
+                </li>
+            </ul>
+        )
+    }
+}
+class Todo extends Component {
+    render() {
+        const todo = this.props.todo;
+        return (
+            <li className={todo.completed ? 'completed' : ''}>
+                <div className="view">
+                    <input className="toggle" type="checkbox" defaultChecked={todo.completed} />
+                    <label>{todo.description}</label>
+                    <button className="destroy"></button>
+                </div>
+                <input className="edit" type="text" value={todo.description} />
+             </li>
         )
     }
 }
@@ -78,6 +117,7 @@ class FooterTodos extends Component {
 }
 
 class TodosTableFilter extends Component {
+    
     render() {
         return (
             <section className="todoapp">
@@ -102,7 +142,13 @@ class TodosTableFilter extends Component {
     }
 }
 
-
+const TODOS = [
+    { id: 1, description: 'Aprender React', completed: true },
+    { id: 2, description: 'Aprender Angular', completed: false },
+    { id: 3, description: 'Leer Clean Code', completed: true },
+    { id: 4, description: 'Leer sobre Patrones de Diseño', completed: true },
+    { id: 5, description: 'Principios SOLID', completed: false },
+]
 
 ReactDOM.render(<App />, document.getElementById('root'));
 
