@@ -31,20 +31,14 @@ class BodyTodos extends Component {
 			    <section className="main">
 				    <input id="toggle-all" className="toggle-all" type="checkbox"/>
 				    <label htmlFor="toggle-all">Mark all as complete</label>
-                    <Todos />
+                    <Todos todos={this.props.todos} filter={this.props.filter}/>
                 </section>
         )
     }
 }
 
 class Todos extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            todos: TODOS
-        };
-    }
-
+    
     createTodoRow(todo){
         const props = {
             todo,
@@ -55,24 +49,25 @@ class Todos extends Component {
         return component;
     }
     render() {
-        const todos = this.state.todos;
-
+        const todos = this.props.todos;
+        const filter = this.props.filter;
         const rowsTodos = [];
+
         todos.forEach((todo)=>{
+            if('active' === filter && todo.completed){
+                return;
+            }
+            if('completed' === filter && !todo.completed ){
+                return;
+            }
+
             rowsTodos.push(this.createTodoRow(todo));
+            
         });
 
         return (
             <ul className="todo-list">
               { rowsTodos }
-                <li>
-                    <div className="view">
-                        <input className="toggle" type="checkbox" />
-                        <label>Buy a unicorn</label>
-                        <button className="destroy"></button>
-                    </div>
-                    <input className="edit" value="Rule the web" />
-                </li>
             </ul>
         )
     }
@@ -94,36 +89,73 @@ class Todo extends Component {
 }
 
 class FooterTodos extends Component {
+    onFilter = (filter) =>{
+        this.props.onChangeFilter(filter);
+    }
 
+    activeClass(filter) {
+        const filterState = this.props.filter;
+        return filter === filterState ? 'selected' : '';
+    }
     render() {
+
         return (
                 <footer className="footer">
-                    <span className="todo-count"><strong>0</strong> item left</span>
+                    <span className="todo-count"><strong>{this.props.size}</strong> item left</span>
                     <ul className="filters">
                         <li>
-                            <a className="selected" href="#/">All</a>
+                            <a className={this.activeClass('all')} href="#/" onClick={(filter) => this.onFilter('all')}>All</a>
                         </li>
                         <li>
-                            <a href="#/active">Active</a>
+                            <a className={this.activeClass('active')} href="#/active"  onClick={(filter) => this.onFilter('active')}>Active</a>
                         </li>
                         <li>
-                            <a href="#/completed">Completed</a>
+                            <a  className={this.activeClass('completed')} href="#/completed"  onClick={(filter) => this.onFilter('completed')}>Completed</a>
                         </li>
                     </ul>
-                    <button className="clear-completed">Clear completed</button>
+                    
+                    <button className="clear-completed" onClick={this.props.clearCompleted}>Clear completed</button>
                 </footer>
         )
     }
 }
 
 class TodosTableFilter extends Component {
-    
+    constructor(props) {
+        super(props);
+        /* All, active, completed */
+        this.state = {
+            todos: TODOS,
+            filter: 'all'
+        };
+    }
+
+    changeFilter = (filter) =>{
+        this.setState({
+            filter
+        });
+    }
+
+    clearCompleted = () => {
+        const todos = this.state.todos;
+        const newTodos = todos.filter((todo) => !todo.completed);
+        this.setState({
+            todos: newTodos
+        })
+    }
+
     render() {
+        const todos = this.state.todos;
+        let size = 0;
+        todos.forEach((todo) => {
+            if(!todo.completed)
+                size++;
+        });
         return (
             <section className="todoapp">
                 <HeaderTodos />
-                <BodyTodos />
-                <FooterTodos />
+                <BodyTodos todos={this.state.todos} filter={this.state.filter} />
+                <FooterTodos size = {size} filter={this.state.filter} onChangeFilter={this.changeFilter} clearCompleted = {this.clearCompleted}/>
             </section>
         );
     }
