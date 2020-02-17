@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Todo } from '../todo/todo.js';
+import { FILTERS } from '../index.js';
 
 export class BodyTodos extends Component {
 
@@ -39,13 +40,13 @@ class Todos extends Component {
         const rowsTodos = [];
 
         todos.forEach((todo)=>{
-            if('active' === filter && todo.completed){
+            
+            if(FILTERS.ACTIVE === filter && todo.completed){
                 return;
             }
-            if('completed' === filter && !todo.completed ){
+            if(FILTERS.COMPLETED === filter && !todo.completed ){
                 return;
             }
-
             rowsTodos.push(this.createTodoRow(todo));
             
         });

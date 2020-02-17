@@ -3,13 +3,19 @@ import {HeaderTodos} from './todos/header.js';
 import {BodyTodos} from './todos/body.js';
 import {FooterTodos} from './todos/footer.js';
 
+export const FILTERS = {
+    ALL: 'all',
+    ACTIVE: 'active',
+    COMPLETED: 'completed'
+}
+
 export class TodosApp extends Component {
     constructor(props) {
         super(props);
         /* All, active, completed */
         this.state = {
             todos: TODOS,
-            filter: 'all'
+            filter: FILTERS.ALL
         };
     }
 

@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { FILTERS } from '../index.js';
 
 export class FooterTodos extends Component {
     onFilter = (filter, e) =>{
@@ -18,13 +19,13 @@ export class FooterTodos extends Component {
                     <span className="todo-count"><strong>{this.props.size}</strong> item left</span>
                     <ul className="filters">
                         <li>
-                            <a className={this.activeClass('all')} href="#/" onClick={(e) => this.onFilter('all', e)}>All</a>
+                            <a className={this.activeClass(FILTERS.ALL)} href="#/" onClick={(e) => this.onFilter(FILTERS.ALL, e)}>All</a>
                         </li>
                         <li>
-                            <a className={this.activeClass('active')} href="#/active"  onClick={(e) => this.onFilter('active', e)}>Active</a>
+                            <a className={this.activeClass(FILTERS.ACTIVE)} href="#/active"  onClick={(e) => this.onFilter(FILTERS.ACTIVE, e)}>Active</a>
                         </li>
                         <li>
-                            <a  className={this.activeClass('completed')} href="#/completed"  onClick={(e) => this.onFilter('completed', e)}>Completed</a>
+                            <a  className={this.activeClass(FILTERS.COMPLETED)} href="#/completed"  onClick={(e) => this.onFilter(FILTERS.COMPLETED, e)}>Completed</a>
                         </li>
                     </ul>
                     
