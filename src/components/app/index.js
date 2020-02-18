@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import {HeaderTodos} from './todos/header.js';
 import {BodyTodos} from './todos/body.js';
 import {FooterTodos} from './todos/footer.js';
-
+import { Todos } from './todos/body.js';
 export const FILTERS = {
     ALL: 'all',
     ACTIVE: 'active',
@@ -96,17 +96,23 @@ export class TodosApp extends Component {
         });
     }
 
-    render() {
-        const todos = this.state.todos;
+    todosNoCompleted(todos){
         let size = 0;
         todos.forEach((todo) => {
             if(!todo.completed)
                 size++;
         });
+        return size;
+    }
+    render() {
+        const todos = this.state.todos;
+        let size = this.todosNoCompleted(todos);
+        
+        const todosComponent = ( <Todos todos={this.state.todos} filter={this.state.filter} onDelete={this.deleteTodo} onCompleted = {this.onChangeCompleted} onEdit={this.editTodo}/>);
         return (
             <section className="todoapp">
                 <HeaderTodos onCreate={this.createTodo}/>
-                <BodyTodos todos={this.state.todos} filter={this.state.filter} onDelete = {this.deleteTodo} onCompleted = {this.onChangeCompleted} onCompletedAll={this.onChangeCompletedAll} onEdit={this.editTodo}/>
+                <BodyTodos  onCompletedAll={this.onChangeCompletedAll} todosComponent = {todosComponent}/>
                 <FooterTodos size = {size} filter={this.state.filter} onChangeFilter={this.changeFilter} clearCompleted = {this.clearCompleted}/>
             </section>
         );

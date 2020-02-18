@@ -14,13 +14,13 @@ export class BodyTodos extends Component {
 			    <section className="main">
 				    <input id="toggle-all" className="toggle-all" type="checkbox" onChange = {this.toggleAll}/>
 				    <label htmlFor="toggle-all">Mark all as complete</label>
-                    <Todos todos={this.props.todos} filter={this.props.filter} onDelete={this.props.onDelete} onCompleted = {this.props.onCompleted} onEdit={this.props.onEdit}/>
+                     {this.props.todosComponent}
                 </section>
         )
     }
 }
 
-class Todos extends Component {
+export class Todos extends Component {
     
     createTodoRow(todo){
         const props = {
