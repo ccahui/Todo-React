@@ -16,14 +16,12 @@ export class Todo extends Component {
             textInput: e.target.value
         });
     }
-
+    focusInput = () => {
+        this.textInput.current.focus();
+    }
     edit = () => {
-        this.setState({
-            isEditing: true
-        });
-        setTimeout(()=>{
-            this.textInput.current.focus();
-        }, 100);
+        this.setState({ isEditing: true }, this.focusInput);
+        
         
     }
 
