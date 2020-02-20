@@ -1,60 +1,57 @@
-import React, { Component } from 'react';
-import { Todo } from '../todo/todo.js';
-import { FILTERS } from '../index.js';
+import React, { Component } from "react";
+import { Todo } from "../todo/todo.js";
+import { FILTERS } from "../index.js";
 
 export class BodyTodos extends Component {
+  toggleAll = e => {
+    const completed = e.target.checked;
+    this.props.onCompletedAll(completed);
+  };
 
-    toggleAll = (e) => {
-       const completed =  e.target.checked;
-       this.props.onCompletedAll(completed);
-    }
-
-    render() {
-        return (
-			    <section className="main">
-				    <input id="toggle-all" className="toggle-all" type="checkbox" onChange = {this.toggleAll}/>
-				    <label htmlFor="toggle-all">Mark all as complete</label>
-                     {this.props.todosComponent}
-                </section>
-        )
-    }
+  render() {
+    return (
+      <section className="main">
+        <input
+          id="toggle-all"
+          className="toggle-all"
+          type="checkbox"
+          onChange={this.toggleAll}
+        />
+        <label htmlFor="toggle-all">Mark all as complete</label>
+        {this.props.todosComponent}
+      </section>
+    );
+  }
 }
 
 export class Todos extends Component {
-    
-    createTodoRow(todo){
-        const props = {
-            todo,
-            key: todo.id,
-            onDelete: this.props.onDelete,
-            onCompleted: this.props.onCompleted,
-            onEdit: this.props.onEdit,
-        };
-        const component = React.createElement(Todo, props);
-        
-        return component;
-    }
-    render() {
-        const todos = this.props.todos;
-        const filter = this.props.filter;
-        const rowsTodos = [];
+  createTodoRow(todo) {
+    const props = {
+      todo,
+      key: todo.id,
+      onDelete: this.props.onDelete,
+      onCompleted: this.props.onCompleted,
+      onEdit: this.props.onEdit
+    };
+    const component = React.createElement(Todo, props);
 
-        todos.forEach((todo)=>{
-            
-            if(FILTERS.ACTIVE === filter && todo.completed){
-                return;
-            }
-            if(FILTERS.COMPLETED === filter && !todo.completed ){
-                return;
-            }
-            rowsTodos.push(this.createTodoRow(todo));
-            
-        });
+    return component;
+  }
+  render() {
+    const todos = this.props.todos;
+    const filter = this.props.filter;
+    const rowsTodos = [];
 
-        return (
-            <ul className="todo-list">
-              { rowsTodos }
-            </ul>
-        )
-    }
+    todos.forEach(todo => {
+      if (FILTERS.ACTIVE === filter && todo.completed) {
+        return;
+      }
+      if (FILTERS.COMPLETED === filter && !todo.completed) {
+        return;
+      }
+      rowsTodos.push(this.createTodoRow(todo));
+    });
+
+    return <ul className="todo-list">{rowsTodos}</ul>;
+  }
 }

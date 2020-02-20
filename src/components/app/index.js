@@ -3,6 +3,7 @@ import {HeaderTodos} from './todos/header.js';
 import {BodyTodos} from './todos/body.js';
 import {FooterTodos} from './todos/footer.js';
 import { Todos } from './todos/body.js';
+
 export const FILTERS = {
     ALL: 'all',
     ACTIVE: 'active',
