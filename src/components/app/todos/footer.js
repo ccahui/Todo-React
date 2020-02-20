@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { FILTERS } from "../index.js";
+import { enumFilterProptype } from '../models/proptypes.js';
 
 export class FooterTodos extends Component {
     
@@ -55,4 +56,8 @@ export class FooterTodos extends Component {
       </footer>
     );
   }
+}
+
+FooterTodos.propTypes = {
+  filter: enumFilterProptype
 }

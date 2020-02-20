@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { todoProptype } from '../models/proptypes.js';
 
 export class Todo extends Component {
   constructor(props) {
@@ -78,4 +79,8 @@ export class Todo extends Component {
       </li>
     );
   }
+}
+
+Todo.propTypes = {
+  todo: todoProptype
 }

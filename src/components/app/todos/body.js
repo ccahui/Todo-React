@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Todo } from "../todo/todo.js";
 import { FILTERS } from "../index.js";
+import { todoArrayProptype } from "../models/proptypes.js";
 
 export class BodyTodos extends Component {
   toggleAll = e => {
@@ -55,3 +56,7 @@ export class Todos extends Component {
     return <ul className="todo-list">{rowsTodos}</ul>;
   }
 }
+
+Todos.propTypes = {
+  todos: todoArrayProptype
+};

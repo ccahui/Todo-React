@@ -121,9 +121,9 @@ export class TodosApp extends Component {
 }
 
 const TODOS = [
-    { id: 1, description: 'Aprender React', completed: true },
-    { id: 2, description: 'Aprender Angular', completed: false },
-    { id: 3, description: 'Leer Clean Code', completed: true },
-    { id: 4, description: 'Leer sobre Patrones de Diseño', completed: true },
-    { id: 5, description: 'Principios SOLID', completed: false },
+    { id: '1', description: 'Aprender React', completed: true },
+    { id: '2', description: 'Aprender Angular', completed: false },
+    { id: '3', description: 'Leer Clean Code', completed: true },
+    { id: '4', description: 'Leer sobre Patrones de Diseño', completed: true },
+    { id: '5', description: 'Principios SOLID', completed: false },
 ]
